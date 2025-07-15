@@ -55,15 +55,69 @@ st.title("Predicción de Diabetes Tipo 2")
 st.subheader(f"Mejor modelo: {mejor_modelo_nombre}")
 
 st.sidebar.header("Ingrese los datos del paciente")
+
+# Ejemplos precargados
+ejemplos = {
+    "Ejemplo 1 - Bajo riesgo": {
+        'Embarazos': 1,
+        'Glucosa': 85.0,
+        'Presion': 66.0,
+        'Pliegue': 29.0,
+        'Insulina': 79.0,
+        'IMC': 26.6,
+        'Pedigri': 0.351,
+        'Edad': 31
+    },
+    "Ejemplo 2 - Alto riesgo": {
+        'Embarazos': 5,
+        'Glucosa': 140.0,
+        'Presion': 80.0,
+        'Pliegue': 35.0,
+        'Insulina': 130.0,
+        'IMC': 40.5,
+        'Pedigri': 0.7,
+        'Edad': 45
+    }
+}
+
+# Selector para cargar ejemplos
+cargar_ejemplo = st.sidebar.selectbox("Cargar ejemplo precargado", ["Ninguno"] + list(ejemplos.keys()))
+
+# Inicializar session_state para inputs si no existe
+def inicializar_estado():
+    defaults = {
+        "Embarazos": 1,
+        "Glucosa": 120.0,
+        "Presion": 70.0,
+        "Pliegue": 20.0,
+        "Insulina": 79.0,
+        "IMC": 30.0,
+        "Pedigri": 0.5,
+        "Edad": 33
+    }
+    for key, val in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = val
+
+inicializar_estado()
+
+# Actualizar session_state con valores del ejemplo seleccionado
+if cargar_ejemplo != "Ninguno":
+    ejemplo = ejemplos[cargar_ejemplo]
+    for key, value in ejemplo.items():
+        if st.session_state[key] != value:
+            st.session_state[key] = value
+
+# Mostrar inputs con valores desde session_state para poder editarlos
 entrada = {
-    'Embarazos': st.sidebar.number_input("Número de embarazos", 0, 20, 1),
-    'Glucosa': st.sidebar.number_input("Nivel de glucosa", 0.0, 300.0, 120.0),
-    'Presion': st.sidebar.number_input("Presión arterial", 0.0, 180.0, 70.0),
-    'Pliegue': st.sidebar.number_input("Grosor del pliegue cutáneo", 0.0, 99.0, 20.0),
-    'Insulina': st.sidebar.number_input("Nivel de insulina", 0.0, 900.0, 79.0),
-    'IMC': st.sidebar.number_input("IMC", 0.0, 70.0, 30.0),
-    'Pedigri': st.sidebar.number_input("Pedigrí de diabetes", 0.0, 2.5, 0.5),
-    'Edad': st.sidebar.number_input("Edad", 1, 120, 33)
+    'Embarazos': st.sidebar.number_input("Número de embarazos", 0, 20, st.session_state.Embarazos, key='Embarazos'),
+    'Glucosa': st.sidebar.number_input("Nivel de glucosa", 0.0, 300.0, st.session_state.Glucosa, key='Glucosa'),
+    'Presion': st.sidebar.number_input("Presión arterial", 0.0, 180.0, st.session_state.Presion, key='Presion'),
+    'Pliegue': st.sidebar.number_input("Grosor del pliegue cutáneo", 0.0, 99.0, st.session_state.Pliegue, key='Pliegue'),
+    'Insulina': st.sidebar.number_input("Nivel de insulina", 0.0, 900.0, st.session_state.Insulina, key='Insulina'),
+    'IMC': st.sidebar.number_input("IMC", 0.0, 70.0, st.session_state.IMC, key='IMC'),
+    'Pedigri': st.sidebar.number_input("Pedigrí de diabetes", 0.0, 2.5, st.session_state.Pedigri, key='Pedigri'),
+    'Edad': st.sidebar.number_input("Edad", 1, 120, st.session_state.Edad, key='Edad')
 }
 
 if st.sidebar.button("Predecir"):
