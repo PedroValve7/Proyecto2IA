@@ -51,7 +51,8 @@ for nombre, modelo in modelos.items():
 mejor_modelo_nombre = max(resultados, key=lambda k: resultados[k]['f1'])
 mejor_modelo = resultados[mejor_modelo_nombre]['modelo']
 
-st.title("Predicción de Diabetes Tipo 2")
+st.title("Predicción de Diabetes Tipo 2 Proyecto Final")
+st.subheader(f"Integrantes: [Pedro Alajo] [Sebastian Reinoso]")
 st.subheader(f"Mejor modelo: {mejor_modelo_nombre}")
 
 # Ejemplos precargados
