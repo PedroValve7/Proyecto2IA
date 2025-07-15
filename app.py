@@ -54,8 +54,6 @@ mejor_modelo = resultados[mejor_modelo_nombre]['modelo']
 st.title("Predicción de Diabetes Tipo 2")
 st.subheader(f"Mejor modelo: {mejor_modelo_nombre}")
 
-st.sidebar.header("Ingrese los datos del paciente")
-
 # Ejemplos precargados
 ejemplos = {
     "Ejemplo 1 - Bajo riesgo": {
@@ -79,6 +77,20 @@ ejemplos = {
         'Edad': 45
     }
 }
+
+# Mostrar predicciones para ejemplos precargados
+st.subheader("Predicciones para ejemplos precargados")
+for nombre, datos in ejemplos.items():
+    df_input = pd.DataFrame([datos])
+    pred = mejor_modelo.predict(df_input)[0]
+    prob = mejor_modelo.predict_proba(df_input)[0][1]
+    resultado = "🟢 Negativo para diabetes tipo 2" if pred == 0 else "🔴 Positivo para diabetes tipo 2"
+    color = "green" if pred == 0 else "red"
+    st.markdown(f"**{nombre}:** <span style='color:{color}; font-weight:bold'>{resultado}</span>", unsafe_allow_html=True)
+    st.markdown(f"> Probabilidad estimada: **{prob:.2f}**")
+    st.write("---")
+
+st.sidebar.header("Ingrese los datos del paciente")
 
 # Selector para cargar ejemplos
 cargar_ejemplo = st.sidebar.selectbox("Cargar ejemplo precargado", ["Ninguno"] + list(ejemplos.keys()))
@@ -124,9 +136,10 @@ if st.sidebar.button("Predecir"):
     input_df = pd.DataFrame([entrada])
     pred = mejor_modelo.predict(input_df)[0]
     prob = mejor_modelo.predict_proba(input_df)[0][1]
-    resultado = "Positivo para diabetes tipo 2" if pred == 1 else "Negativo para diabetes tipo 2"
-    st.success(f"Resultado: {resultado}")
-    st.info(f"Probabilidad estimada: {prob:.2f}")
+    resultado = "🟢 Negativo para diabetes tipo 2" if pred == 0 else "🔴 Positivo para diabetes tipo 2"
+    color = "green" if pred == 0 else "red"
+    st.markdown(f"**Resultado:** <span style='color:{color}; font-weight:bold'>{resultado}</span>", unsafe_allow_html=True)
+    st.markdown(f"Probabilidad estimada: **{prob:.2f}**")
 
 st.subheader("Comparación de métricas")
 df_metricas = pd.DataFrame({
